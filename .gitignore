@@ -1,0 +1,58 @@
+# Fichiers et dossiers générés par le système d'exploitation
+.DS_Store
+Thumbs.db
+
+# Fichiers de sauvegarde
+*.bak
+*.swp
+
+# Dossiers de dépendances et fichiers de construction
+node_modules/
+dist/
+build/
+
+# Fichiers de configuration spécifiques à l'IDE
+.idea/
+.vscode/
+
+# Fichiers de logs
+*.log
+
+# Fichiers de données sensibles
+config.ini
+secrets.json
+
+# Fichiers de documentation générés
+docs/
+
+# Fichiers de cache
+.cache/
+
+# Fichiers de sauvegarde automatique
+*.backup
+*.tmp
+
+# Fichiers de sortie de compilation
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Fichiers de sauvegarde de l'éditeur de texte
+*.swp
+*.swo
+*.swn
+
+# Fichiers de sauvegarde de l'éditeur Vim
+*.un~
+*.un
+*.bak
+*.swp
+*.swo
+*.swn
+
+# Fichiers de sauvegarde de l'éditeur Emacs
+*~
+
+# Fichiers de sauvegarde de l'éditeur Nano
+.nanorc~
