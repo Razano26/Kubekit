@@ -1,0 +1,5 @@
+auth:
+  username: harbor
+  password: S7KK8yRe97u3ZW5djs
+  postgresPassword: S7KK8yRe97u3ZW5djs
+  database: registry
