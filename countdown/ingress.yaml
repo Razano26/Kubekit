@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: countdown
+  namespace: lenid
+  labels:
+    name: countdown
+spec:
+  rules:
+  - host: comeback.lenid.ovh
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: countdown
+            port: 
+              number: 3000

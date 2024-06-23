@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: countdown
+  namespace: lenid
+spec:
+  selector:
+    app: countdown
+  ports:
+  - port: 3000
+    targetPort: 3000

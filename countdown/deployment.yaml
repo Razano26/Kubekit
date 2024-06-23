@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: countdown
+  namespace: lenid
+spec:
+  selector:
+    matchLabels:
+      app: countdown
+  template:
+    metadata:
+      labels:
+        app: countdown
+    spec:
+      containers:
+      - name: countdown
+        image: yooooomi/easy-countdown
+        env:
+        - name: TIMER_BACKGROUND
+          value: "https://digwallpapers.com/wallpapers/middle-retina/a/d/9/37661-3840x2160-starry-night-wallpaper-image-desktop-4k.jpg"
+        - name: TIMER_TARGET
+          value: "Tue Jun 18 2024 21:11:00 GMT+0200"
+        - name: TIMER_TITLE
+          value: "Retour à la maison"
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 3000
