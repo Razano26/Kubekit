@@ -15,6 +15,7 @@ This repository provides a straightforward approach to deploying essential servi
 | [Loki](./monitoring/loki) | Log aggregation system like Prometheus, but for logs | [Site](https://grafana.com/oss/loki/) | ❌ |
 | [Prometheus](./monitoring/prometheus) | Monitoring system and time series database | [Site](https://prometheus.io/) | 🔄 |
 | [Sealed Secrets](./sealed-secrets) | Kubernetes controller and tool for one-way encrypted Secrets | [GitHub](https://github.com/bitnami-labs/sealed-secrets) | ❌ |
+| [Trivy](./trivy) | A simple and comprehensive vulnerability scanner for containers | [Site](https://trivy.dev/) | ✅ |
 | [Uptime Kuma](./uptime) | Simple uptime monitor | [GitHub](https://github.com/louislam/uptime-kuma) | 🔄 |
 
 ## Status Key
