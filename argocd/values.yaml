@@ -1,0 +1,16 @@
+global:
+  domain: argocd.example.com # Change this to your domain
+configs:
+  params:
+    server.insecure: true
+server:
+  certificate:
+    enabled: true
+    issuer:
+      group: cert-manager.io
+      kind: ClusterIssuer
+      name: letsencrypt-prod # Change this to your ClusterIssuer
+  ingress:
+    enabled: true
+    ingressClassName: traefik # Change this to your ingress class
+    tls: true
