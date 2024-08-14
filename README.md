@@ -1,6 +1,6 @@
-# K3s Essentials
+# Kubekit
 
-This repository provides a straightforward approach to deploying essential services on a K3s cluster. Below is a list of applications, their descriptions, relevant links, and the current documentation status.
+This repository provides a straightforward approach to deploying essential services on a kubernetes cluster. Below is a list of applications, their descriptions, relevant links, and the current documentation status.
 
 ## Applications
 | Application | Description | Source | Status |
