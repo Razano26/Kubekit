@@ -27,6 +27,8 @@ helm repo add argo https://argoproj.github.io/argo-helm
 
 2. Create a `values.yaml` file with the following content:
 
+If you want to use external authentication, you can follow this yaml file: [values_gh_OICD.yaml](./values_gh_OICD.yaml)
+
 ```yaml
 global:
   domain: argocd.example.com # Change this to your domain

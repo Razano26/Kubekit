@@ -1,0 +1,28 @@
+global:
+  domain: argocd.example.com # Change this to your domain
+configs:
+  cm:
+    create: true
+    dex.config: |
+      connectors:
+        - type: github
+          id: github
+          name: GitHub
+          config:
+            clientID: YOUR_CLIENT_ID
+            clientSecret: YOUR_CLIENT_SECRET
+            orgs:
+            - name: YOUR_ORG
+  params:
+    server.insecure: true
+server:
+  certificate:
+    enabled: true
+    issuer:
+      group: cert-manager.io
+      kind: ClusterIssuer
+      name: letsencrypt-prod # Change this to your ClusterIssuer
+  ingress:
+    enabled: true
+    ingressClassName: traefik # Change this to your ingress class
+    tls: true
