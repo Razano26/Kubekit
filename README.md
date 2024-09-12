@@ -6,7 +6,7 @@ This repository provides a straightforward approach to deploying essential servi
 | Application | Description | Source | Status |
 |-------------|-------------|---------------|--------|
 | [ArgoCD](./argocd) | Declarative GitOps CD for Kubernetes | [Site](https://argoproj.github.io/cd/) | ✅ |
-| [Cert Manager](./certmanager) | Automates the management and issuance of TLS certificates | [Site](https://cert-manager.io/) | ✅ |
+| [Cert Manager](./cert-manager) | Automates the management and issuance of TLS certificates | [Site](https://cert-manager.io/) | ✅ |
 | [Countdown](./countdown) | A simple web countdown timer | [GitHub](https://github.com/Yooooomi/easy-countdown) | 🔄 |
 | [GitHub Actions Runner Controller](./github/runners) | Manages self-hosted GitHub Actions runners | [Documentation](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners-with-actions-runner-controller/about-actions-runner-controller) | ❌ |
 | [Grafana](./monitoring/grafana) | Open platform for beautiful analytics and monitoring | [Site](https://grafana.com/) | 🔄 |
