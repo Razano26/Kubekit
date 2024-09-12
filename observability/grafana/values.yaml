@@ -1,0 +1,14 @@
+ingress:
+  enabled: true
+  annotations: {
+    spec.ingressClassName: traefik,
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  }
+  hosts:
+    - example.com
+  tls: 
+    - secretName: grafana-tls
+      hosts:
+        - example.com
+persistence:
+  enabled: true

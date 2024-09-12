@@ -4,7 +4,7 @@ global:
 
   # To help compatibility with other charts which use global.imagePullSecrets.
   # Allow either an array of {name: pullSecret} maps (k8s-style), or an array of strings (more common helm-style).
-  # Can be tempalted.
+  # Can be templated.
   # global:
   #   imagePullSecrets:
   #   - name: pullSecret1
@@ -164,6 +164,7 @@ extraConfigmapMounts: []
   #   subPath: certificates.crt # (optional)
   #   configMap: certs-configmap
   #   readOnly: true
+  #   optional: false
 
 
 extraEmptyDirMounts: []
@@ -205,6 +206,10 @@ downloadDashboards:
 ## Pod Annotations
 # podAnnotations: {}
 
+## ConfigMap Annotations
+# configMapAnnotations: {}
+  # argocd.argoproj.io/sync-options: Replace=true
+
 ## Pod Labels
 # podLabels: {}
 
@@ -220,6 +225,10 @@ gossipPortName: gossip
 service:
   enabled: true
   type: ClusterIP
+  # Set the ip family policy to configure dual-stack see [Configure dual-stack](https://kubernetes.io/docs/concepts/services-networking/dual-stack/#services)
+  ipFamilyPolicy: ""
+  # Sets the families that should be supported and the order in which they should be applied to ClusterIP as well. Can be IPv4 and/or IPv6.
+  ipFamilies: []
   loadBalancerIP: ""
   loadBalancerClass: ""
   loadBalancerSourceRanges: []
@@ -234,7 +243,7 @@ service:
   appProtocol: ""
 
 serviceMonitor:
-  ## If true, a ServiceMonitor CRD is created for a prometheus operator
+  ## If true, a ServiceMonitor CR is created for a prometheus operator
   ## https://github.com/coreos/prometheus-operator
   ##
   enabled: false
@@ -261,15 +270,12 @@ hostAliases: []
   #     - "my.host.com"
 
 ingress:
-  enabled: true
+  enabled: false
   # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
   # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
   # ingressClassName: nginx
   # Values can be templated
-  annotations: {
-    spec.ingressClassName: traefik,
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-  }
+  annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   labels: {}
@@ -279,7 +285,7 @@ ingress:
   pathType: Prefix
 
   hosts:
-    - grafana.razano.dev
+    - chart-example.local
   ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
   extraPaths: []
   # - path: /*
@@ -296,10 +302,10 @@ ingress:
   #         name: use-annotation
 
 
-  tls: 
-    - secretName: grafana-tls
-      hosts:
-        - grafana.razano.dev
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
 
 resources: {}
 #  limits:
@@ -361,7 +367,7 @@ extraContainerVolumes: []
 #    emptyDir: {}
 
 ## Enable persistence using Persistent Volume Claims
-## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+## ref: https://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
   type: pvc
@@ -380,6 +386,7 @@ persistence:
   # existingClaim:
   ## Extra labels to apply to a PVC.
   extraPvcLabels: {}
+  disableWarning: false
 
   ## If persistence is not enabled, this allows to mount the
   ## local storage in-memory to improve performance
@@ -391,6 +398,10 @@ persistence:
     ## here and the sum of memory limits of all containers in a pod
     ##
     # sizeLimit: 300Mi
+
+  ## If 'lookupVolumeName' is set to true, Helm will attempt to retrieve
+  ## the current value of 'spec.volumeName' and incorporate it into the template.
+  lookupVolumeName: true
 
 initChownData:
   ## If false, data ownership will not be reset at startup
@@ -529,6 +540,7 @@ extraSecretMounts: []
   #   mountPath: /etc/secrets
   #   secretName: grafana-secret-files
   #   readOnly: true
+  #   optional: false
   #   subPath: ""
   #
   # for AWS EKS (cloudwatch) use the following (see also instruction in env: above)
@@ -785,7 +797,7 @@ grafana.ini:
   grafana_net:
     url: https://grafana.net
   server:
-    domain: "{{ if (and .Values.ingress.enabled .Values.ingress.hosts) }}{{ .Values.ingress.hosts | first }}{{ else }}''{{ end }}"
+    domain: "{{ if (and .Values.ingress.enabled .Values.ingress.hosts) }}{{ tpl (.Values.ingress.hosts | first) . }}{{ else }}''{{ end }}"
 ## grafana Authentication can be enabled with the following values on grafana.ini
  # server:
       # The full public facing url you use in browser, used for redirects and emails
@@ -849,7 +861,7 @@ sidecar:
     # -- The Docker registry
     registry: quay.io
     repository: kiwigrid/k8s-sidecar
-    tag: 1.26.1
+    tag: 1.27.4
     sha: ""
   imagePullPolicy: IfNotPresent
   resources: {}
@@ -919,6 +931,19 @@ sidecar:
     enabled: false
     # Additional environment variables for the dashboards sidecar
     env: {}
+    ## "valueFrom" environment variable references that will be added to deployment pods. Name is templated.
+    ## ref: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.19/#envvarsource-v1-core
+    ## Renders in container spec as:
+    ##   env:
+    ##     ...
+    ##     - name: <key>
+    ##       valueFrom:
+    ##         <value rendered as YAML>
+    envValueFrom: {}
+    #  ENV_NAME:
+    #    configMapKeyRef:
+    #      name: configmap-name
+    #      key: value_key
     # Do not reprocess already processed unchanged resources on k8s API reconnect.
     # ignoreAlreadyProcessed: true
     SCProvider: true
@@ -966,6 +991,8 @@ sidecar:
       orgid: 1
       # folder in which the dashboards should be imported in grafana
       folder: ''
+      # <string> folder UID. will be automatically generated if not specified
+      folderUid: ''
       # type of the provider
       type: file
       # disableDelete to activate a import-only behaviour
@@ -982,7 +1009,19 @@ sidecar:
     enabled: false
     # Additional environment variables for the datasourcessidecar
     env: {}
+    ## "valueFrom" environment variable references that will be added to deployment pods. Name is templated.
+    ## ref: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.19/#envvarsource-v1-core
+    ## Renders in container spec as:
+    ##   env:
+    ##     ...
+    ##     - name: <key>
+    ##       valueFrom:
+    ##         <value rendered as YAML>
     envValueFrom: {}
+    #  ENV_NAME:
+    #    configMapKeyRef:
+    #      name: configmap-name
+    #      key: value_key
     # Do not reprocess already processed unchanged resources on k8s API reconnect.
     # ignoreAlreadyProcessed: true
     # label that the configmaps with datasources are marked with
@@ -1121,6 +1160,10 @@ imageRenderer:
     targetCPU: "60"
     targetMemory: ""
     behavior: {}
+  # The url of remote image renderer if it is not in the same namespace with the grafana instance
+  serverURL: ""
+  # The callback url of grafana instances if it is not in the same namespace with the remote image renderer
+  renderingCallbackURL: ""
   image:
     # -- The Docker registry
     registry: docker.io
@@ -1239,6 +1282,18 @@ imageRenderer:
   ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
   ##
   # schedulerName: "default-scheduler"
+
+  # Extra configmaps to mount in image-renderer pods
+  extraConfigmapMounts: []
+
+  # Extra secrets to mount in image-renderer pods
+  extraSecretMounts: []
+
+  # Extra volumes to mount in image-renderer pods
+  extraVolumeMounts: []
+
+  # Extra volumes for image-renderer pods
+  extraVolumes: []
 
 networkPolicy:
   ## @param networkPolicy.enabled Enable creation of NetworkPolicy resources. Only Ingress traffic is filtered for now.

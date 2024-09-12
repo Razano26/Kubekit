@@ -1,0 +1,28 @@
+ingress:
+  enabled: true
+  annotations: {
+    spec.ingressClassName: traefik,
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  }
+  hosts:
+    - example.com
+  tls: 
+    - secretName: grafana-tls
+      hosts:
+        - example.com
+persistence:
+  enabled: true
+# if you want to use github oauth for login
+grafana.ini:
+  root_url: https://example.com
+  auth.github:
+    enabled: true
+    allow_sign_up: true
+    scopes: user:email,read:org
+    auth_url: https://github.com/login/oauth/authorize
+    token_url: https://github.com/login/oauth/access_token
+    api_url: https://api.github.com/user
+    team_ids: null
+    allowed_organizations: example_org # change this to your org name
+    client_id: xxxx # your github client_id
+    client_secret: xxxx # your github client_secret
