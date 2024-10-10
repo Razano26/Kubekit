@@ -1,0 +1,17 @@
+ingress:
+  enabled: true
+  annotations: {
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  }
+  hosts:
+    - host: n8n.example.com
+      paths: []
+  tls:
+    - secretName: n8n-tls
+      hosts:
+        - n8n.example.com
+  className: "traefik"
+
+persistence:
+  enabled: true
+  size: 10Gi
