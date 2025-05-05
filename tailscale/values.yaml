@@ -1,0 +1,5 @@
+oauth:
+  clientId: "xx" # Replace with your client ID
+  clientSecret: "tskey-client-xx-xxx" # Replace with your client secret
+apiServerProxyConfig:
+  mode: "true"
